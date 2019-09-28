@@ -23,9 +23,19 @@ def job():
 
     date = {"year": int(year), "month": int(month), "day": int(day)}
     print(index.getMessages(date))
+    results = index.getMessages(date)
+
+    if len(results) > 0:
+        print('so shit')
+        ## send to sender.py for sending all messages out for that day
+
+        ## afterward return true, 
+        ## if done == true:
+        ##  delete all messages in db that are the present day
 
 
 schedule.every(0.1).minutes.do(job)
+
 while True:
     schedule.run_pending()
     time.sleep(1)

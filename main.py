@@ -1,11 +1,15 @@
 from flask import Flask, request
-from crontab import CronTab
 from db import index    
+# from crontab import CronTab
 
 import datetime
 
 import schedule
 import time
+
+
+
+
 
 app = Flask(__name__)
 
@@ -36,7 +40,8 @@ def form_example():
                 </form>
                 </div>'''
 
-@app.route("/retrieve", methods=['GET'])
-def getForToday():
-    print(index.getMessages())
-    return 'done'
+
+
+# @hourly 
+
+
