@@ -25,7 +25,7 @@ def saveMessage(body):
 def getMessages(date):
   results = []
   print(date)
-  sql = "SELECT * FROM users where date=%s"
+  sql = "SELECT email, message FROM users where date=%s"
   x = datetime.date(date["year"], date["month"], date["day"])
   vals = (x,)
   mycursor.execute(sql, vals)
@@ -33,8 +33,16 @@ def getMessages(date):
   myresult = mycursor.fetchall ( )
 
   for x in myresult :
-
     results.append(x)
   
   return results
+
+
+
+def deleteMessages(curDate):
+  sql="DELETE * FROM users where date=%s"
+  vals=(curDate,)
+  mycursor.execute(sql, vals)
+
+  return 'done'
 
