@@ -1,16 +1,20 @@
 from flask import Flask, request
 from db import index    
+import tesing
+
 
 import datetime
 import tracking
 import schedule
 import time
+import asyncio
+import threading
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 import atexit
 
-
+done = False
 app = Flask(__name__)
 
 @app.route("/")
@@ -40,7 +44,13 @@ def form_example():
                 </form>
                 </div>'''
 
+
+
+
+result = []
+
 def getMessages():
+    
     currentDT = datetime.datetime.now()
     fullDate = str(currentDT)
 
@@ -59,21 +69,52 @@ def getMessages():
     date = {"year": int(year), "month": int(month), "day": int(day)}
     results = index.getMessages(date)
     
+    # formatting = list(results[0])
+    # body = {"reciever": formatting[0], "message": formatting[1]}
+    # formatcomplete.append(body)
     for cur in results:
-        formats = list(cur)
-        print(formats[1])
+        formatting = list(cur)
+        body = {"reciever": formatting[0], "message": formatting[1]}
+        result.append(body)
+    
+    print(result)
+    return result
 
 
+def sendMsg():
+    print(result)
+    tesing.loop(result)
 
-scheduler = BackgroundScheduler()
+    
+
+scheduler = BackgroundScheduler({
+    'apscheduler.executors.default': {
+        'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
+        'max_workers': '20'
+    },
+    'apscheduler.executors.processpool': {
+        'type': 'processpool',
+        'max_workers': '5'
+    },
+    'apscheduler.job_defaults.coalesce': 'false',
+    'apscheduler.job_defaults.max_instances': '3',
+    'apscheduler.timezone': 'UTC',
+})
 scheduler.start()
 
 scheduler.add_job(
     func=getMessages,
-    trigger=IntervalTrigger(seconds=2),
-    id='printing_time_job',
-    name='Print time every 2 seconds',
-    replace_existing=True)
+    trigger=IntervalTrigger(seconds=20),
+    id='getting_messages',
+    name='Print time every 10 seconds')
+
+scheduler.add_job(
+func=sendMsg,
+trigger=IntervalTrigger(seconds=26),
+id='printing_time_job',
+name='Print time every 10 seconds')
+
+    
 # Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
 
