@@ -31,7 +31,7 @@ scheduler = BackgroundScheduler({
 })
 
     
-@app.route('/remindMe', methods=['GET', 'POST']) #allow both GET and POST requests
+@app.route('/', methods=['GET', 'POST']) #allow both GET and POST requests
 def form_example():
 
     if request.method == 'POST':
