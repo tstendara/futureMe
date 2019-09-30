@@ -20,11 +20,9 @@ def saveMessage(body):
     print(mycursor.rowcount, "record saved")
 
 
-    #crontab maybe?
-
 def getMessages(date):
   results = []
-  print(date)
+  
   sql = "SELECT email, message FROM users where date=%s"
   x = datetime.date(date["year"], date["month"], date["day"])
   vals = (x,)
@@ -35,14 +33,14 @@ def getMessages(date):
   for x in myresult :
     results.append(x)
   
+  print(results)
   return results
 
 
-
-def deleteMessages(curDate):
-  sql="DELETE * FROM users where date=%s"
-  vals=(curDate,)
+def deleteMessages(date):
+  sql="DELETE FROM users where date=%s"
+  val= datetime.date(date["year"], date["month"], date["day"])
+  vals=(val,)
   mycursor.execute(sql, vals)
-
-  return 'done'
+  mydb.commit()
 
