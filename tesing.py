@@ -8,7 +8,7 @@ username = config.G_username
 password = config.G_password
 
 async def myTask(dat):
-    time.sleep(1)
+    time.sleep(2)
     print("Processing message")
 
     print(dat['reciever'])

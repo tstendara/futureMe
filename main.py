@@ -12,6 +12,8 @@ import threading
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from apscheduler.triggers.cron import CronTrigger
+
 import atexit
 
 done = False
@@ -47,7 +49,7 @@ def form_example():
 
 
 
-result = []
+allMessages = []
 
 def getMessages():
     
@@ -69,21 +71,19 @@ def getMessages():
     date = {"year": int(year), "month": int(month), "day": int(day)}
     results = index.getMessages(date)
     
-    # formatting = list(results[0])
-    # body = {"reciever": formatting[0], "message": formatting[1]}
-    # formatcomplete.append(body)
     for cur in results:
         formatting = list(cur)
         body = {"reciever": formatting[0], "message": formatting[1]}
-        result.append(body)
+        allMessages.append(body)
     
-    print(result)
-    return result
+    sendMsg()
 
 
 def sendMsg():
-    print(result)
-    tesing.loop(result)
+    if len(allMessages) > 0:
+        tesing.loop(allMessages)
+    else:
+        return
 
     
 
@@ -102,17 +102,26 @@ scheduler = BackgroundScheduler({
 })
 scheduler.start()
 
-scheduler.add_job(
-    func=getMessages,
-    trigger=IntervalTrigger(seconds=20),
-    id='getting_messages',
-    name='Print time every 10 seconds')
+def testing():
+    print('waow')
 
-scheduler.add_job(
-func=sendMsg,
-trigger=IntervalTrigger(seconds=26),
-id='printing_time_job',
-name='Print time every 10 seconds')
+scheduler.add_job(testing, CronTrigger.from_crontab('0 0 * * *'))
+
+scheduler.add_job(getMessages, CronTrigger.from_crontab('0 0 * * *'))
+
+# scheduler.add_job(
+#     func=getMessages,
+#     trigger=IntervalTrigger(seconds=20),
+#     id='getting_messages',
+#     name='Getting messages every ',
+#     start_date='2019-10-01 07:30')
+
+# scheduler.add_job(
+# func=sendMsg,
+# trigger=IntervalTrigger(hours=2),
+# id='sending_messages',
+# name='send messages every 24 hours',
+# start_date='2019-10-01 08:30')
 
     
 # Shut down the scheduler when exiting the app
