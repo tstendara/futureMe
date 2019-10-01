@@ -1,13 +1,14 @@
-import mysql.connector
+import pymysql
 import datetime
 import config
 
-mydb = mysql.connector.connect(
+mydb = pymysql.connect(
   host=config.host,
   user=config.user,
   passwd=config.passwd,
   database=config.database
 )
+
 
 mycursor = mydb.cursor()
 
@@ -18,6 +19,8 @@ def saveMessage(body):
 
     mydb.commit()
     print(mycursor.rowcount, "record saved")
+
+    mydb.close()
 
 
 def getMessages(date):
@@ -36,6 +39,8 @@ def getMessages(date):
   print(results)
   return results
 
+  mydb.close()
+
 
 def deleteMessages(date):
   sql="DELETE FROM users where date=%s"
@@ -43,4 +48,6 @@ def deleteMessages(date):
   vals=(val,)
   mycursor.execute(sql, vals)
   mydb.commit()
+
+  mydb.close()
 

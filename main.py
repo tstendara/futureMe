@@ -36,10 +36,10 @@ def form_example():
 
     if request.method == 'POST':
         form = request.form
-
         x = {'email':form['email'], 'message':form['message'], 'date':form['date']}
 
         index.saveMessage(x)
+
         return 'Submitted with email ' + request.form['email']
 
 
@@ -47,7 +47,7 @@ def form_example():
                 <form method="POST" style="margin: auto; width: 50%;"> 
                     Email: <input type="text" name="email"><br>
                     <p style="margin-bottom:10px">Message:</p> <textarea  rows="3" cols="27" type="text" name="message"></textarea><br>
-                    Date(year-month-day): <input type="text" name=date><br>
+                    Date(year-month-day): <input type="date" name=date><br>
                     <input type="submit" value="Submit"><br>
                 </form>
                 </div>'''
@@ -81,9 +81,8 @@ def delMessages():
 
 scheduler.start()
 
-scheduler.add_job(getMessages, CronTrigger.from_crontab('0 0 * * *')) ## midnight everyday
-
-scheduler.add_job(delMessages, CronTrigger.from_crontab('0 12 * * *')) ## everyday at 12pm
+scheduler.add_job(getMessages, CronTrigger.from_crontab('0 0 * * *')) ## midnight everyday, gettng all messages/sending all 
+scheduler.add_job(delMessages, CronTrigger.from_crontab('0 12 * * *')) ## everyday at 12pm, deleting all messages
 
 
 # scheduler.add_job(
